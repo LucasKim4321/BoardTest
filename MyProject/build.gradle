@@ -1,0 +1,128 @@
+// 프로젝트 복사시 라이브러리 설정만 넘어오고 라이브러리는 안넘어오기 때문에 다시 인식시켜 줘야함.
+// 주석 달고 저장 후 업뎃 주석 풀고 저장 후 업뎃
+
+// QueryDsl 설정  1.빌드스크립트 설정  2.관련 라이브러리 추가 및 설정  3.소스 설정 4.컴파일 설정
+
+// 1. QueryDsl 빌드스크립트 설정
+buildscript {
+	ext {
+		queryDslVersion = '5.0.0'
+	}
+}
+
+plugins {
+	id 'java'
+	id 'war'
+	id 'org.springframework.boot' version '3.3.2'
+	id 'io.spring.dependency-management' version '1.1.6'
+}
+
+group = 'com.spring'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	// 로그인 제약 라이브러리 spring-boot-starter-security  기본제공 아이디 user 비밀번호 로그창에 랜덤하게 생성
+	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	compileOnly 'org.projectlombok:lombok'
+	runtimeOnly 'com.h2database:h2'
+	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+	annotationProcessor 'org.projectlombok:lombok'
+	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+
+	// spring-boot-starter-validation: 서버 유효성 검사 라이브러리
+	implementation 'org.springframework.boot:spring-boot-starter-validation:3.3.2'
+	// modelmapper
+	// https://mvnrepository.com/artifact/org.modelmapper/modelmapper
+	implementation 'org.modelmapper:modelmapper:3.2.1'
+	// thymeleaf-layout-dialect": 타입리프 레이아웃 템플릿
+	// https://mvnrepository.com/artifact/nz.net.ultraq.thymeleaf/thymeleaf-layout-dialect
+	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
+
+
+	// 썸네일
+	// https://mvnrepository.com/artifact/net.coobird/thumbnailator
+	implementation 'net.coobird:thumbnailator:0.4.20'
+	// CSRF토큰: thymelef에서 인증 관련 라이브러리
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6:3.1.2.RELEASE'
+
+
+	// spring-boot-devtools
+	//implementation 'org.springframework.boot:spring-boot-devtools:3.3.2'
+
+
+	// 테스트용 라이브러리
+	// springboot 3xx 이후 : springfox-swagger-ui: Rest API 테스트 라이브러리
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
+	// Gson
+	// https://mvnrepository.com/artifact/com.google.code.gson/gson
+	implementation 'com.google.code.gson:gson:2.11.0'
+	// assertJ
+	// https://mvnrepository.com/artifact/org.assertj/assertj-core
+	testImplementation 'org.assertj:assertj-core:3.26.3'
+
+	// 테스트 관련
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	// IntelliJ에서 테스트 할 때는 따로 인식 시켜줘야함 (이클립스는 필요없음)
+	// IntelliJ gradle 적용시 필수(
+	testAnnotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.projectlombok:lombok'
+	// 보안 테스트
+	// https://mvnrepository.com/artifact/org.springframework.security/spring-security-test
+	testImplementation 'org.springframework.security:spring-security-test:6.3.1'
+
+
+	// 2. QueryDsl 관련 라이브러리 추가 및 설정
+	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}:jakarta"
+	annotationProcessor(
+			"jakarta.persistence:jakarta.persistence-api",
+			"jakarta.annotation:jakarta.annotation-api",
+			"com.querydsl:querydsl-apt:${queryDslVersion}:jakarta")
+
+}
+
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+// 3. QueryDsl 소스 설정
+sourceSets {
+	main {
+		java {
+			srcDirs = ["$projectDir/src/main/java", "$projectDir/build/generated"]
+		}
+	}
+}
+
+// 4. QueryDsl 컴파일 설정
+// 컴파일 하기전에 클린(빌드 파일을 지움)
+// QEntity가 존재하는 데 중복 생성하려고 해서 에러
+compileJava.dependsOn('clean')
+
+// 5. JPA queryDSL error => "Attempt to recreate a file" 도메인 중복 발생
+// IntelliJ -> Gradle 변환 or
+// Gradle -> IntelliJ 변환

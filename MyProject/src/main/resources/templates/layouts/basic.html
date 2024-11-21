@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultrag.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>MyProject</title>
+
+    <!-- 전체페이지에서 공통을 사용되는 css인경우 :  Core theme CSS (includes Bootstrap) -->
+    <link href="css/styles.css"
+          th:href="@{/css/styles.css}" rel="stylesheet" />
+
+    <!-- css import : 특정 페이지에서 사용되는 css인경우 -->
+    <th:block layout:fragment="mystyle"></th:block>
+
+    <style>
+        .loginMessage { color: lightsalmon; }
+        .fixed-top > navbar { position: relative; }
+        .searchFormBox { position: absolute; top:50%; left:50%; transform:translate(-50%, -50%); width:30%}
+    </style>
+
+</head>
+
+<body>
+<!-- Navigation bar 상단 메뉴바-->
+<div class="fixed-top">  <!-- 최상단 고정 fixed-top, 최하단 고정 fixed-bottom -->
+    <nav class="navbar navbar-expand-lg bg-light navbar-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">MyShop</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <!-- 메뉴 -->
+            <!-- sec:authorize 속성을 통해 특정 요소(태그)를 활성화, 비활성화 설정 -->
+            <!-- 변경 전 sec:authorize ="hasAnyAuthority('ROLE_USER')" -->
+            <!-- 변경 후 sec:authorize ="hasAnyAuthority('USER')" -->
+            <div class="collapse navbar-collapse d-flex" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/"
+                           th:href="@{/}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <!-- ROLE_ADMIN을 소문자로 써도 대문자로 인식함 -->
+                        <a class="nav-link" href="/admin/item/new"
+                           sec:authorize ="hasAnyAuthority('ROLE_ADMIN')"
+                           th:href="@{/admin/item/new}">상품등록</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/items"
+                           sec:authorize ="hasAnyAuthority('ROLE_ADMIN')"
+                           th:href="@{/admin/items}">상품관리</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/guest/cart"
+                           sec:authorize ="isAnonymous()"
+                           th:href="@{/cart}">(비회원)장바구니</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/user/cart"
+                           sec:authorize ="hasAnyAuthority('ROLE_USER')"
+                           th:href="@{/cart2}">(유저)장바구니</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/user/orders"
+                           sec:authorize ="hasAnyAuthority('ROLE_USER')"
+                           th:href="@{/orders}">구매이력</a>
+                    </li>
+
+                    <!-- sec:authorize ="hasAnyAuthority('ROLE_ADMIN','ROLE_MANAGER')" -->
+                    <!-- sec:authorize access="hasAnyRole('ROLE_ADMIN','ROLE_MANAGER')" -->
+
+                    <!-- 드롭다운 메뉴
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Dropdown
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Action</a></li>
+                            <li><a class="dropdown-item" href="#">Another action</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        </ul>
+                    </li>
+                    -->
+                    <!-- 비활성화 메뉴
+                    <li class="nav-item">
+                        <a class="nav-link disabled" aria-disabled="true">Disabled</a>
+                    </li>
+                    -->
+                </ul>
+
+
+                <!-- 회원 메뉴 -->
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/members/new"
+                           sec:authorize ="isAnonymous()"
+                           th:href="@{/members/new}">회원가입</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/members/login"
+                           sec:authorize ="isAnonymous()"
+                           th:href="@{/members/login}">로그인</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/members/logout"
+                           sec:authorize ="isAuthenticated()"
+                           th:href="@{/members/logout}">로그아웃</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/members/read"
+                           sec:authorize ="isAuthenticated()">회원정보수정</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"
+                           sec:authorize="isAuthenticated()">
+                            <div class="loginMessage">[[${#authentication.principal.name}]]님!😘</div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+
+        <!-- 검색 창 -->
+        <div class="searchFormBox">
+            <form role="search">
+                <div class="searchBox d-flex">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-secondary searchBtn" type="submit">Search</button>
+                </div>
+            </form>
+        </div>
+
+    </nav>
+
+</div>
+
+<!-- start bootstrap simple sidebar -->
+<div class="d-flex" id="wrapper">
+    <!-- Sidebar 왼쪽메뉴바 -->
+    <!-- <div th:replace="~{fragments/header::sidebar}"></div> -->
+    <div class="border-end bg-white" id="sidebar-wrapper">
+        <div class="sidebar-heading border-bottom bg-light">MyProject! :b</div>
+        <div class="list-group list-group-flush">
+            <a class="list-group-item list-group-item-action list-group-item-light p-3" th:href="@{/members}" href="/members">회원관리</a>
+            <a class="list-group-item list-group-item-action list-group-item-light p-3" th:href="@{/board/list}" href="/board/list">게시판</a>
+            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">바로가기</a>
+            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">이벤트</a>
+            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">프로필</a>
+            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">상태</a>
+        </div>
+    </div>
+
+    <!-- Page content wrapper-->
+    <div id="page-content-wrapper">
+
+        <!-- Top navigation-->
+        <!-- <div th:replace="~{fragments/header::navbar}"></div> -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+            <div class="container-fluid">
+                <button class="btn btn-primary" id="sidebarToggle">Toggle Menu</button>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent2">
+                    <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
+                        <li class="nav-item active"><a class="nav-link" href="#!">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#!">Link</a></li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
+                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="#!">Action</a>
+                                <a class="dropdown-item" href="#!">Another action</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#!">Something else here</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Page content: 바뀌는 콘텐츠 영역을 불러오기 -->
+        <div class="container-fluid style_check myContent mt-4" layout:fragment="content" >
+
+        </div>
+
+
+    </div>
+</div>
+
+<!-- footer -->
+<div th:replace="~{fragments/footer::footer}"></div>
+
+<!-- 메시지 모달창 -->
+<div class="modal modalMessage fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">  <!-- 메시지를 전달하는 부분 -->
+                메시지 전달
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- 페이지 전체 공통으로 사용되는 javascript -->
+<!-- Bootstrap core JS-->
+<script src="js/bootstrap.bundle.min.js"
+        th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<!-- Core theme JS-->
+<script src="js/scripts.js"
+        th:src="@{/js/scripts.js}"></script>
+
+<!-- 메시지 공동 처리 -->
+<script th:inline="javascript">
+    // 게시글 등록 성공시 결과값 출력
+    let result = [[${result}]];
+    let bno = [[${bno}]];
+    console.log('result',result);
+    console.log('bno',bno);
+
+    // show modall창에 메시지 출력하기
+    const modalMessage = new bootstrap.Modal(document.querySelector('.modalMessage'));
+    // 추상적으로 대충 태그 찍으면 나중에 문제 생길 가능성 큼
+    const modalBody = document.querySelector('.modalMessage .modal-body')  // 메시지를 출력하는 태그
+
+    console.log("test1");
+    let message = "";
+    if (result) {
+        if (result=="registered"){
+            message = `${bno}번 글이 등록 되었습니다~ :b`;
+        }
+        if (result=="modified"){
+            message = `${bno}번 글이 수정 되었습니다~ :b`;
+        }
+        if (result=="removed"){
+            message = `${bno}번 글이 삭제 되었습니다~ :b`;
+        }
+
+        modalBody.innerHTML = message;
+
+        modalMessage.show();
+
+        console.log("test2");
+    }
+    console.log("test3");
+
+</script>
+
+<!-- javascript import : 특정 페이지에서 사용되는 javascript인경우 -->
+<th:block layout:fragment="myscript"></th:block>
+
+</body>
+</html>

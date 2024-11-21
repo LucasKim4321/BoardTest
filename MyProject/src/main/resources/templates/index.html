@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+    <html xmlns:th="http://www.thymeleaf.org"
+          xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultrag.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/basic}">
+
+<!-- 현재 페이지에서만 사용하는 컨텐츠(내용) 정의 -->
+<div layout:fragment="content">
+    <!-- content -->
+    <div class="container-fluid myContent">
+        <div sec:authorize="isAuthenticated()">
+            <h2 class="loginMessage">[[${#authentication.principal.name}]]님 안녕하세요오~~~</h2>
+        </div>
+        <hr>
+        <div sec:authorize="isAuthenticated()">  <!-- 권한이 없으면 아예 없는 태그로 침 -->
+   <!-- <div th:if="${#authentication.principal != 'anonymousUser'}"> --> <!-- 미등록 사용자가 아니면 -->
+            <h2>스프링 시큐리티를 사용하는 경우 Authentication 타입을 이용해서 사용자 정보 불러오기</h2>
+            <h3>Authentication 정보 추출</h3>
+            <div th:text="${#authentication}"></div>
+            <h3>Authentication.principal 정보 추출</h3>
+            <div th:text="${#authentication.principal}"></div>
+            <h3>Authentication.principal.authorities 정보 추출</h3>
+            <!-- 로그인 상태가 아닐 시 authorities 값이 undefined가 되서 에러가 남-->
+            <div th:text="${#authentication.principal.authorities}"></div>
+            <h3>Authentication.principal.username 정보 추출</h3>
+            <div th:text="${#authentication.principal.username}"></div>
+            <h3>Authentication.principal.password 정보 추출</h3>
+            <div th:text="${#authentication.principal.password}"></div>
+            <h3>Authentication.principal.name 정보 추출</h3>
+            <div th:text="${#authentication.principal.name}"></div>
+            <h3>Authentication.principal.address 정보 추출</h3>
+            <div th:text="${#authentication.principal.address}"></div>
+        </div>
+    </div>
+</div>
+
+<!-- 현재 페이지에서만 사용하는 css 정의 -->
+<style layout:fragment="mystyle" th:inline="css">
+
+</style>
+
+<!-- 현재 페이지에서만 사용하는 script 정의 -->
+<script layout:fragment="myscript" th:inline="javascript">
+    console.log("index.html");
+    // ---------------------------------------------------------------------- //
+    // 스프링 시큐리티를 사용하는 경우 Authentication 타입을 이용해서 사용자 정보를 추출
+    // ---------------------------------------------------------------------- //
+    const auth = [[${#authentication}]]  // authentication.principal.name 이렇게 바로 불러오면 비로그인 상태에서 값을 불러올 수 없을 때 에러 걸림
+    console.log("authentication : ",auth);  // authentication 정보 출력
+    console.log("authentication.principal : ",auth.principal);  // 로그인 시 로그인 사용자 정보가 나옴
+    console.log("authentication.principal.authorities : ",auth.principal.authorities);  // 사용자가 가진 권한이 배열 구조로 표시되고 정보가 자세히 보임
+    console.log("authentication.principal.name : ",auth.principal.name);
+    // ---------------------------------------------------------------------- //
+</script>
+
