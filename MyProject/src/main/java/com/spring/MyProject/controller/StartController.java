@@ -15,7 +15,7 @@ public class StartController {
 
     @GetMapping("")
     public String memberRegisterForm(Model model) {
-        return "/index";
+        return "index";
     }
 
 }

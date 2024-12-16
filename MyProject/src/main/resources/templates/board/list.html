@@ -12,7 +12,7 @@
 
     <!-- 검색 키워드 -->
     <div>
-        <form action="/board/list" method="get" id="search">
+        <form action="/board/list" th:action="@{/board/list}" method="get" id="search">
             <!-- 타입 -->
             <div class="d-flex mb-2">
                 <div class="input-group-prepend">
@@ -67,7 +67,7 @@
                             <!-- img-thumbnail 부트스트랩 -->
                             <img style="width:100px" class="img-thumbnail"
                                  th:each="boardImage: ${dto.boardImages}"
-                                 th:src="|/view/s_${boardImage.uuid}_${boardImage.fileName}|"/>
+                                 th:src="|@{/view/}s_${boardImage.uuid}_${boardImage.fileName}|"/>
                         </div>
                     </td>
 
@@ -125,8 +125,7 @@
 
         </div>
 
-
-
+        <div class="dataCon" hidden th:data-contextPath="@{/}"></div>
 
         <div th:text="'getLink: '+${pageRequestDTO.getLink()}"></div>
         <div th:text="'page: '+${responseDTO.page}"></div>
@@ -154,6 +153,8 @@
 <!-- 현재 페이지에서만 사용하는 script 정의 -->
 <script layout:fragment="myscript" th:inline="javascript">
     console.log("스크립트 실행! :b");
+
+    var contextPath = document.querySelector('.dataCon').getAttribute('data-contextPath');
 
     // 페이징 번호 클릭시 처리하는 함수
     document.querySelector('.pagination').addEventListener('click',function(e) {
@@ -188,7 +189,7 @@
         e.preventDefault();  // 기본 이벤트 제거
         e.stopPropagation();  // 버블링(현재 이벤트가 발생한 요소의 상위 요소들에 대해서 이벤트 감지되는 현상) 방지
 
-        location.href="/board/list"
+        location.href=`${contextPath}board/list`
     })
 
 

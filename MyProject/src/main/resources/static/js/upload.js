@@ -1,5 +1,7 @@
 console.log("/js/upload.js....")
 
+var contextPath = document.querySelector('.dataCon').getAttribute('data-contextPath');
+
 // ----------------------------------------------- //
 // server에 파일 upload 처리 : axios(비동기) 요청 테스트
 // ----------------------------------------------- //
@@ -11,7 +13,7 @@ async function uploadToServer(formObj) {
     // UpDownController에서  RestAPI형식으로 요청한 url 분석하여 실제 업로드
     const response = await axios({
         method: 'post',  // 첨부파일은 반드시 post방식을 사용
-        url: '/upload',
+        url: `${contextPath}upload`,
         data: formObj,
         headers: {
             'Content-Type': 'multipart/form-data'  // 타입은 첨부파일 여러개
@@ -37,7 +39,7 @@ async function uploadToServer(formObj) {
 // ----------------------------------------------- //
 
 async function removeFileToServer({uuid, fileName}) {
-    const response = await axios.delete(`/remove/${uuid}_${fileName}`)
+    const response = await axios.delete(`${contextPath}remove/${uuid}_${fileName}`)
 
     return response.data
 

@@ -63,7 +63,7 @@
                             <!-- img-thumbnail 부트스트랩 -->
                             <img style="" class="w-100"
                                  th:each="fileName: ${dto.fileNames}"
-                                 th:src="|/view/${fileName}|"/>
+                                 th:src="|@{/view/}${fileName}|"/>
                         </div>
                     </div>
                 </div>
@@ -109,8 +109,8 @@
 
 
                 <!-- Axios 라이브러리 연결 -->
-                <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-                <script src="/js/reply.js"></script>
+<!--                <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>-->
+<!--                <script src="/js/reply.js" th:src="@{/js/reply.js}"></script>-->
 
                 <hr>
 
@@ -191,10 +191,13 @@
         </div>
     </div>
 
+    <div class="dataCon" hidden th:data-contextPath="@{/}"></div>
+
     <!-- Axios 라이브러리 연결 -->
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <!-- file upload 처리하는 javascript 연결 -->
-    <script src="/js/upload.js"></script>
+    <script src="/js/upload.js" th:src="@{/js/upload.js}"></script>
+    <script src="/js/reply.js" th:src="@{/js/reply.js}"></script>
 
 </div>  <!-- end fragment="content"-->
 
@@ -212,6 +215,10 @@
 
 <!--/* 현재 페이지에서만 사용하는 script 정의 */-->
 <script layout:fragment="myscript" th:inline="javascript">
+    console.log("스크립트 실행! :b");
+
+    var contextPath = document.querySelector('.dataCon').getAttribute('data-contextPath');
+
     console.log('bno3',bno);
     const reply_bno = [[${dto.bno}]];
     console.log('reply_bno: ',reply_bno);
@@ -411,7 +418,7 @@
 
             const formObj = document.querySelector('#readForm');
             //formObj.action = "/board/remove?"+[[${dto.bno}]];
-            formObj.action = `/board/remove`
+            formObj.action = `${contextPath}board/remove`
             formObj.method = "post";
             formObj.submit();
         }

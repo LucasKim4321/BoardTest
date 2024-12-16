@@ -10,7 +10,7 @@
         <hr>
         <div>
             <!-- 상위 태그에서 th:object="${memberDTO}" 를 쓰면 하위 태그에서 memberDTO를 *로 생략 (예 *{email} ) -->
-            <form id="memberForm" action="/members/new" method="post" th:object="${memberDTO}" >
+            <form id="memberForm" action="/members/new" th:action="@{/members/new}" method="post" th:object="${memberDTO}" >
 
                 <!-- 이메일 -->
                 <div class="mb-3 row">
@@ -87,7 +87,9 @@
 <!--                </div>-->
 
                 <div class="d-flex">
-                    <button type="button" id="cancel" class="btn btn-outline-danger ms-auto">cancel</button>
+                    <a th:href="@{/}" class="ms-auto">
+                        <button type="button" id="cancel" class="btn btn-outline-danger">cancel</button>
+                    </a>
                     <button type="submit" id="submit" class="btn btn-outline-success ms-3">submit</button>
                 </div>
 

@@ -7,7 +7,7 @@
 <div layout:fragment="content">
     <div class="container">
         <div class="formBox mx-auto">
-            <form action="/members/login" method="post" id="loginForm">
+            <form action="/members/login" th:action="@{/members/login}" method="post" id="loginForm">
                 <h2 class="my-5 mb-3 text-center">로그인</h2>
                 <!-- 이메일 -->
                 <div class="row my-5 mb-3">

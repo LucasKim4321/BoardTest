@@ -13,7 +13,7 @@
 
         <!-- 게시글 리스트 -->
         <div class="card-body">
-            <form action="/board/register" method="post" id="createBoardForm">
+            <form action="/board/register" th:action="@{/board/register}" method="post" id="createBoardForm">
                 <div class="mb-3 row">
                     <label for="title" class="col-form-label ps-4">title</label>
                     <div class="col">
@@ -106,10 +106,12 @@
         </div>
     </div>
 
+    <div class="dataCon" hidden th:data-contextPath="@{/}"></div>
+
     <!-- Axios 라이브러리 연결 -->
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <!-- file upload 처리하는 javascript 연결 -->
-    <script src="/js/upload.js"></script>
+    <script src="/js/upload.js" th:src="@{/js/upload.js}"></script>
 
 </div> <!-- end fragment="content"-->
 
@@ -126,6 +128,10 @@
 
 <!-- 현재 페이지에서만 사용하는 script 정의 -->
 <script layout:fragment="myscript" th:inline="javascript">
+    console.log("스크립트 실행! :b");
+
+    var contextPath = document.querySelector('.dataCon').getAttribute('data-contextPath');
+
     // 에러 메시지
 
     const errors = [[${errors}]];
@@ -236,7 +242,7 @@
                         onClick="javascript:removeFile('${uuid}', '${fileName}', this)" > x </button>
             </div>
             <div class="card-body">
-                <img src="/view/${link}" data-src="${uuid+"_"+fileName}" class="mx-auto"/>
+                <img src="${contextPath}view/${link}" data-src="${uuid+"_"+fileName}" class="mx-auto"/>
             </div>
         </div>
         `;
@@ -374,7 +380,7 @@
         e.preventDefault();  // 기본 이벤트 제거
         e.stopPropagation();  // 버블링(현재 이벤트가 발생한 요소의 상위 요소들에 대해서 이벤트 감지되는 현상) 방지
 
-        location.href="/board/register";
+        location.href=`${contextPath}board/register`;
     })
 
 

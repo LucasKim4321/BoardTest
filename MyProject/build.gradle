@@ -121,8 +121,16 @@ sourceSets {
 // 4. QueryDsl 컴파일 설정
 // 컴파일 하기전에 클린(빌드 파일을 지움)
 // QEntity가 존재하는 데 중복 생성하려고 해서 에러
-compileJava.dependsOn('clean')
+//compileJava.dependsOn('clean')
+
+// clean 대신 사용. 컴파일시 QEntity 중복 생성 방지
+tasks.withType(JavaCompile) {
+	options.annotationProcessorGeneratedSourcesDirectory = file("$buildDir/generated")
+}
+
 
 // 5. JPA queryDSL error => "Attempt to recreate a file" 도메인 중복 발생
 // IntelliJ -> Gradle 변환 or
 // Gradle -> IntelliJ 변환
+
+

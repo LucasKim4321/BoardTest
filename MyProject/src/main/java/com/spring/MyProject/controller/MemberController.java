@@ -79,7 +79,7 @@ public class MemberController {
         log.info("==> login ");
 
         // 로그인 페이지로 포워딩
-        return "/members/loginForm";
+        return "members/loginForm";
     }
 
     // 1-1. 로그인 실패시 처리할 url
@@ -89,7 +89,7 @@ public class MemberController {
 
         model.addAttribute("loginErrorMsg", "아이디 또는 비밀번호를 확인해라옹~");
 
-        return "/members/loginForm";
+        return "members/loginForm";
     }
 
     // 로그아웃 처리 CustomSecurityConfig에서 설정함
